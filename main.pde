@@ -3,6 +3,8 @@
 int columnas = 12;
 int filas =24;
 
+
+
 int posicion_fila=0;
 int posicion_columna=0;
 int posicion_fila_anterior;
