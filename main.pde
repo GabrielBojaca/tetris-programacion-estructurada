@@ -29,10 +29,10 @@ int[][][] tablero = {
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
+  { {1, 4, 50, 02}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 132, 50, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
+  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 132, 50, 210} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
@@ -72,7 +72,7 @@ void setup() {
 
 
 void draw() {
-  println(estado);
+ // println(estado);
   fill(130);
   rect(1*(width/12), 22*(height/24), width*10/12, width/6);
 
@@ -143,11 +143,407 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
   if (fondo==false) {
     dibujar_pieza(pieza, estado_pieza, columna, fila, false);
   }
-  if (direccion=="derecha") {
-    posicion_columna++;
+  if (direccion=="derecha") { 
+    switch(pieza){
+      case 0:
+        estado %= 2;
+        switch(estado){
+          case 0:
+            if(posicion_columna<8){
+              if(tablero[fila+1][columna+1+1][0]==0){
+                posicion_columna++;
+              }
+            }
+          break;
+          case 1:
+            if(posicion_columna<10){
+              if(tablero[fila][columna][0]==0
+              &&tablero[fila+1][columna][0]==0
+              &&tablero[fila+2][columna][0]==0
+              &&tablero[fila+3][columna][0]==0)
+              {
+                posicion_columna++;
+              }
+            }
+        break;
+        }
+      break; //end-pieza case 0
+      case 1:
+        estado %= 4;
+        switch(estado){
+          case 0:
+            if(posicion_columna<9){
+              if(tablero[fila+1][columna+1][0]==0
+               &&tablero[fila][columna-1][0]==0){
+              posicion_columna++;
+              }
+            }
+          break;
+          case 1:
+            if(posicion_columna<9){
+              if(tablero[fila+1][columna][0]==0  //Eje
+               &&tablero[fila+2][columna][0]==0
+               &&tablero[fila][columna+1][0]==0){
+              posicion_columna++;
+              }
+            }
+          break;
+          case 2:
+            if(posicion_columna<9){
+              if(tablero[fila+1][columna+1][0]==0
+                 &&tablero[fila+2][columna+1][0]==0){
+              posicion_columna++;}
+            }
+          break;
+          case 3:
+            if(posicion_columna<10){
+              if(tablero[fila+1][columna][0]==0  
+               &&tablero[fila][columna][0]==0
+               &&tablero[fila+2][columna][0]==0){
+      
+              posicion_columna++;}
+            }
+          break;          
+        } 
+      break; //end-pieza case 1
+      case 2:
+        estado %= 4;
+        switch(estado){
+          case 0:
+            if(posicion_columna<9){
+              if(tablero[fila+1][columna+1][0]==0
+               &&tablero[fila][columna+1][0]==0)
+              posicion_columna++;
+            }
+          break;
+          case 1:
+            if(posicion_columna<9){
+              if(tablero[fila+1][columna][0]==0  //Eje
+               &&tablero[fila][columna][0]==0
+               &&tablero[fila+2][columna+1][0]==0){ 
+                posicion_columna++;
+              }
+            }
+          break;
+          case 2:
+            if(posicion_columna<9){
+              if(tablero[fila+1][columna+1][0]==0
+               &&tablero[fila+2][columna-1][0]==0){
+              posicion_columna++;}
+            }
+          break;
+          case 3:
+            if(posicion_columna<10){
+              if(tablero[fila+1][columna][0]==0
+               &&tablero[fila][columna][0]==0
+               &&tablero[fila+2][columna][0]==0){
+              posicion_columna++;  }
+            }
+          break;
+        }
+      break; //end-pieza case 2
+      case 3:
+        estado %= 2;
+        switch(estado_pieza){
+          case 0:
+          if(posicion_columna <9){
+            if(tablero[fila+1][columna][0]==0
+             &&tablero[fila][columna+1][0]==0){
+              posicion_columna++;
+            }
+          }
+          break;
+          case 1:
+          if(posicion_columna <9){
+            if(tablero[fila][columna][0]==0
+             &&tablero[fila+1][columna+1][0]==0
+             &&tablero[fila+2][columna+1][0]==0){
+             posicion_columna++;
+           }            
+          }
+          break;        
+        }
+      break; // end-pieza case 3
+      case 4:
+      estado %= 2;
+        switch(estado){
+         case 0:
+           if(posicion_columna<9){
+             if(tablero[fila+1][columna+1][0]==0
+              &&tablero[fila][columna][0]==0){
+               posicion_columna++;
+             }
+           }
+         break;
+         case 1:
+           if(posicion_columna<9){
+             if(tablero[fila+1][columna+1][0]==0
+              &&tablero[fila][columna+1][0]==0
+              &&tablero[fila+2][columna][0]==0){
+               posicion_columna++;
+             }
+           }
+         break;          
+        }    
+      break;//end-pieza 4
+      case 5:
+      estado %= 4;
+        switch(estado){
+          case 0:
+            if(posicion_columna<9){
+              if(tablero[fila+1][columna+1][0]==0
+               &&tablero[fila][columna][0]==0){
+              posicion_columna++;
+              }
+            }
+          break;
+          case 1:
+            if(posicion_columna<9){
+                if(tablero[fila+1][columna+1][0]==0
+                 &&tablero[fila][columna][0]==0
+                 &&tablero[fila+2][columna][0]==0){
+                posicion_columna++;
+                }
+              }
+          break;
+          case 2:
+            if(posicion_columna<9){
+                if(tablero[fila+1][columna+1][0]==0
+                 &&tablero[fila+2][columna][0]==0){
+                posicion_columna++;
+                }
+              }
+          break;
+          case 3:
+            if(posicion_columna<10){
+                if(tablero[fila+1][columna][0]==0
+                 &&tablero[fila+2][columna][0]==0
+                 &&tablero[fila][columna][0]==0){
+                posicion_columna++;
+                }
+              }
+          break;
+        }
+          
+      break;//end pieza 5
+      case 6:
+        if(posicion_columna<9){
+                if(tablero[fila+1][columna+1][0]==0
+                 &&tablero[fila][columna+1][0]==0){
+                posicion_columna++;
+                }
+              }
+      break;
+    } //end case pieza  
   }
   if (direccion=="izquierda") {
-    posicion_columna--;
+    switch(pieza){
+      case 0:
+      estado %=2;
+        switch(estado){
+          case 0:
+            if(posicion_columna>2){
+              if(tablero[fila+1][columna-3][0]==0){
+                posicion_columna--;
+              }
+            }
+          break;
+          case 1:
+            if(posicion_columna>1){
+             if(tablero[fila][columna-2][0]==0
+              &&tablero[fila+1][columna-2][0]==0
+              &&tablero[fila+2][columna-2][0]==0
+              &&tablero[fila+3][columna-2][0]==0){
+               posicion_columna--;
+             }
+            }
+          break;
+        }      
+      break;  //end  pieza 0 
+      
+      case 1:
+      estado %=4;
+        switch(estado){
+          case 0:
+            if(posicion_columna>2){
+             if(tablero[fila+1][columna-3][0]==0
+              &&tablero[fila][columna-3][0]==0){
+               posicion_columna--;   
+             }
+            }
+          break;
+          case 1:
+            if(posicion_columna>1){
+              if(tablero[fila+1][columna-2][0]==0 
+               &&tablero[fila][columna-2][0]==0
+               &&tablero[fila+2][columna-2][0]==0){
+               posicion_columna--; 
+              }
+            }
+          break;
+          case 2:
+            if(posicion_columna>2){
+              if(tablero[fila+1][columna-3][0]==0
+                 &&tablero[fila+2][columna-1][0]==0){
+               posicion_columna--; 
+              }
+            }
+          break;
+          case 3:
+            if(posicion_columna>2){
+              if(tablero[fila+1][columna-2][0]==0  //Eje
+               &&tablero[fila][columna-2][0]==0
+               &&tablero[fila+2][columna-3][0]==0){
+                posicion_columna--; 
+              }   
+            }
+          
+          break;
+        }
+
+      break;  //end  pieza 1  
+      
+      case 2:
+      estado %=4;
+        switch(estado){
+          case 0:
+          if(posicion_columna>2){
+            if(tablero[fila+1][columna-3][0]==0
+             &&tablero[fila][columna-1][0]==0){
+              posicion_columna--;
+            }
+          }
+          break;
+          case 1:
+            if(posicion_columna>1){
+             if(tablero[fila+1][columna-2][0]==0
+              &&tablero[fila][columna-2][0]==0
+              &&tablero[fila+2][columna-2][0]==0){
+              posicion_columna--; 
+             }
+            }
+          break;
+          case 2:
+            if(posicion_columna>2){
+              if(tablero[fila+1][columna-3][0]==0
+               &&tablero[fila+2][columna-3][0]==0){
+                posicion_columna--;
+              }
+            }
+          break;
+          case 3:
+            if(posicion_columna>2){
+              if(tablero[fila+1][columna-2][0]==0  //Eje
+               &&tablero[fila+2][columna-2][0]==0
+               &&tablero[fila][columna-3][0]==0){
+                posicion_columna--;
+              }
+            }
+          break;
+        }
+      break;  //end  pieza 2
+      
+      case 3:
+      estado %=2;
+        switch(estado){
+          case 0:
+            if(posicion_columna>2){
+              if(tablero[fila+1][columna-3][0]==0
+               &&tablero[fila][columna-2][0]==0){
+                posicion_columna--;
+              }
+            }
+          break;
+          case 1:
+            if(posicion_columna>1){
+              if(tablero[fila+1][columna-2][0]==0  //Eje
+            &&tablero[fila][columna-2][0]==0
+            &&tablero[fila+2][columna-1][0]==0){
+                posicion_columna--;
+              }            
+            }
+          
+          break;
+        
+        }
+      break;  //end  pieza 3
+      
+      case 4:
+      estado %=2;
+        switch(estado){
+          case 0:
+            if(posicion_columna>2){
+             if(tablero[fila+1][columna-2][0]==0  
+              &&tablero[fila][columna-3][0]==0){
+               posicion_columna--; 
+             }
+            }
+          break;
+          case 1:
+            if(posicion_columna>1){
+             if(tablero[fila+1][columna-2][0]==0
+           &&tablero[fila][columna-1][0]==0
+           &&tablero[fila+2][columna-2][0]==0){
+              posicion_columna--; 
+             }
+            }
+          break;
+        }
+      
+      break;  //end  pieza 4
+      
+      case 5:
+      estado %=4;
+        switch(estado){
+          case 0:
+            if(posicion_columna>2){
+              if(tablero[fila+1][columna-3][0]==0
+            &&tablero[fila][columna-2][0]==0){
+               posicion_columna--; 
+              }
+            }
+          break;
+          case 1:
+            if(posicion_columna>1){
+              if(tablero[fila+1][columna-2][0]==0
+            &&tablero[fila+2][columna-2][0]==0
+            &&tablero[fila][columna-2][0]==0){
+               posicion_columna--; 
+              }
+            }      
+          break;
+          case 2:
+            if(posicion_columna>2){
+             if(tablero[fila+1][columna-3][0]==0
+              &&tablero[fila+2][columna-2][0]==0){
+              posicion_columna--; 
+             }
+            }
+          break;
+          case 3:
+            if(posicion_columna>2){
+             if(tablero[fila+2][columna-2][0]==0
+              &&tablero[fila][columna-2][0]==0
+              &&tablero[fila+1][columna-3][0]==0){
+              posicion_columna--; 
+             }
+            }
+          break;
+        }
+      
+      break;  //end  pieza 5
+      
+      case 6:
+          if(posicion_columna>1){
+           if(tablero[fila+1][columna-2][0]==0
+            &&tablero[fila][columna-2][0]==0){
+            posicion_columna--; 
+           }
+          }
+      break;  //end  pieza 6
+      
+    } //end case pieza  
+    
   }
   if (direccion=="abajo") {
     switch(pieza) { //Analizamos que pieza es
@@ -447,10 +843,6 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
         break;
       }
       break;
-
-
-
-
     case 6:
       estado_pieza %= 1;
       switch(estado_pieza) {
@@ -604,15 +996,14 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
 
   case 3:
     estado_pieza %=2;
-    switch(estado_pieza) {
+    switch(estado_pieza) { 
     case 0:
       if (tablero[fila+1][columna][0]==0
-        &&tablero[fila+2][columna][0]==0) {  
+        &&tablero[fila+2][columna][0]==0) {        
         dibujar_pieza(pieza, estado_pieza, columna, fila, false);
         estado++;
       }
-
-      break;
+     break;
 
     case 1:
       if (columna>=2)
@@ -624,6 +1015,7 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
 
       break;
     }
+  break;
   case 4:
     estado_pieza %=2;
     switch(estado_pieza) {
