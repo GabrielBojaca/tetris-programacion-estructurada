@@ -12,11 +12,11 @@ int posicion_columna_anterior;
 int estado=0;
 int estado_anterior=0;
 
-int tetro=2;
+int tetro=0;
 
 int puntaje = 0;
 int nivel = 0;
-
+int filas_eliminadas=0;
 
 
 String direccion;
@@ -47,10 +47,10 @@ int[][][] tablero = {
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} } 
+  { {0, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0} }, 
+  { {0, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0} }, 
+  { {0, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0} }, 
+  { {0, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0} } 
 };
 
 
@@ -98,13 +98,14 @@ void draw() {
   fill(0);
   textSize(20);
   text("Puntaje: " + puntaje,width/10,22.8*(height/24));
-  text("Nivel: " + nivel,4*width/10,22.8*(height/24));
-  println(puntaje);
+  text("Nivel: " + nivel,6*width/10,22.8*(height/24));
+  //println(puntaje);
 
   dibujar_pieza(tetro, estado, posicion_columna, posicion_fila, true);
  // dibujar_pieza(0, 1, 3, 14, true);
  // dibujar_pieza(0, 0, 5, 19, true);
   if (fondo) {
+    revisarFila();
     posicion_columna=5;
     posicion_fila=0;
     tetro += int(random(1,6));
@@ -112,7 +113,9 @@ void draw() {
     tetro %= 7;
     fondo=false;
   }
+  
   dibujar_tablero();
+  
 }
 
 void dibujar_tablero() {
@@ -129,7 +132,7 @@ void dibujar_tablero() {
       rect((j+1)* (width/12), (i-1) *(width/12), width/12, width/12);
       push();
       fill(255);
-      //text(tablero[i][j][0], (j+1)* (width/12)+10, (i-1)*(width/12)+20);
+      text(tablero[i][j][0], (j+1)* (width/12)+10, (i-1)*(width/12)+20);
       pop();
     }
   }
@@ -1106,6 +1109,44 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
   }
 }
 
+void revisarFila(){
+int suma=0;
+int fila_quitada = 0;
+
+  for(int fil=tablero.length-1; fil>=0; fil--){
+    suma=0;
+    for(int col=0; col<=tablero[0].length-1; col++){
+      suma += tablero[fil][col][0];
+      //println("fila: " + fil + "columna: " + col + "valor: " + tablero[fil][col][0] + "suma: " + suma);
+    }
+    if(suma==10 && fondo == true){
+      println("ptm");
+      for(int col=0; col<=tablero[0].length-1; col++){
+       tablero[fil][col][0]=0; 
+       tablero[fil][col][1]=0;
+       tablero[fil][col][2]=0;
+       tablero[fil][col][3]=0;
+       fila_quitada = fil;
+      } 
+      puntaje += 100;
+      
+      for(int fil_quitar = fila_quitada; fil_quitar>=1; fil_quitar--){
+        for(int col_quitar = 0; col_quitar<=tablero[0].length-1; col_quitar++){
+         tablero[fil_quitar][col_quitar][0]=tablero[fil_quitar-1][col_quitar][0]; 
+         tablero[fil_quitar][col_quitar][1]=tablero[fil_quitar-1][col_quitar][1];
+         tablero[fil_quitar][col_quitar][2]=tablero[fil_quitar-1][col_quitar][2];
+         tablero[fil_quitar][col_quitar][3]=tablero[fil_quitar-1][col_quitar][3];  
+        }
+      }
+      fil=tablero.length-1 ;
+       
+    }
+     
+    
+  }
+  //delay(8000);
+}
+
 void mouseClicked() {
   girar_pieza(tetro, estado, posicion_columna, posicion_fila);
 }
@@ -1114,7 +1155,7 @@ void keyPressed() {
   delay(1);
   if (key == 's' || key == 'S') {
     mover_pieza(tetro, estado, posicion_columna, posicion_fila, "abajo");
-    puntaje += 0.1;
+    puntaje += 1;
     
     
   } else if (key == 'w' || key == 'W') {
