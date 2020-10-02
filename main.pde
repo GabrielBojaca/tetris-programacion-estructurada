@@ -12,11 +12,20 @@ int posicion_columna_anterior;
 int estado=0;
 int estado_anterior=0;
 
-int tetro=5;
+int tetro=2;
+
+int puntaje = 0;
+int nivel = 0;
+
 
 
 String direccion;
 boolean fondo=false;
+
+int tiempo_anterior = 0;
+boolean toma_tiempo = true;
+int tiempo_bajada=500;
+
 
 int[][][] tablero = {
   //Columna  {estado,R,G,B}
@@ -57,9 +66,9 @@ void settings() {
 void setup() {
   frameRate(30);
   fill(102);
-  for (int i=0; i<=11; i++) { //columnas
-    for (int j=0; j<=23; j++) { //filas
-      rect(i*(width/12), j*(height/24), width/12, width/12);
+  for (int i=0; i<=columnas-1; i++) { //columnas
+    for (int j=0; j<=filas-1; j++) { //filas
+      rect(i*(width/columnas), j*(height/filas), width/columnas, width/columnas);
       //println(i+","+j);
     }
   }
@@ -72,25 +81,37 @@ void setup() {
 
 
 void draw() {
+  if(toma_tiempo){
+   tiempo_anterior=millis(); 
+   toma_tiempo = false;
+  }
+  if(millis()-tiempo_anterior>tiempo_bajada){
+  mover_pieza(tetro, estado, posicion_columna, posicion_fila, "abajo");
+  toma_tiempo = true;
+  }
+  
+  
  // println(estado);
+  stroke(0);
   fill(130);
   rect(1*(width/12), 22*(height/24), width*10/12, width/6);
+  fill(0);
+  textSize(20);
+  text("Puntaje: " + puntaje,width/10,22.8*(height/24));
+  text("Nivel: " + nivel,4*width/10,22.8*(height/24));
+  println(puntaje);
 
   dibujar_pieza(tetro, estado, posicion_columna, posicion_fila, true);
  // dibujar_pieza(0, 1, 3, 14, true);
  // dibujar_pieza(0, 0, 5, 19, true);
-
-
   if (fondo) {
     posicion_columna=5;
-    posicion_fila=5;
-
-    tetro++;
+    posicion_fila=0;
+    tetro += int(random(1,6));
+    println(int(random(1,6)));
     tetro %= 7;
     fondo=false;
   }
-
-
   dibujar_tablero();
 }
 
@@ -553,6 +574,10 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
       estado_pieza %= 2;
       switch(estado_pieza) {
       case 0:  //Si está horizontal
+        if (posicion_fila==20) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0 
           && tablero[posicion_fila+2][posicion_columna-2][0]==0
           && tablero[posicion_fila+2][posicion_columna][0]==0
@@ -561,23 +586,22 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
           if (posicion_fila<20) {
             posicion_fila++;
           }
-          if (posicion_fila==20) {
-            fondo = true;
-          }
+          
         } else {
           fondo=true;
         }          
         break;
       case 1:  //Si está vertical
+        if (posicion_fila==18) { 
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+4][posicion_columna-1][0]==0) {
 
           if (posicion_fila<18) {
             posicion_fila++;
           }
-          if (posicion_fila==18) {
-            posicion_fila=18; 
-            fondo = true;
-          }
+          
         } else {
           fondo=true;
         }
@@ -588,6 +612,10 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
       estado_pieza %= 4;
       switch(estado_pieza) {
       case 0:
+        if (posicion_fila==20) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0 
           && tablero[posicion_fila+2][posicion_columna-2][0]==0
           && tablero[posicion_fila+2][posicion_columna][0]==0)
@@ -595,30 +623,32 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
           if (posicion_fila<20) {
             posicion_fila++;
           }
-          if (posicion_fila==20) {
-            posicion_fila=20; 
-            fondo = true;
-          }
+          
         } else {
           fondo=true;
         }                           
         break;   
       case 1:
+        if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+3][posicion_columna-1][0]==0 && //mas abajo
           tablero[posicion_fila+1][posicion_columna][0]==0)
         {
           if (posicion_fila<19) {
             posicion_fila++;
           }
-          if (posicion_fila==19) {
-            posicion_fila=19; 
-            fondo = true;
-          }
+          
         } else {
           fondo=true;
         }
         break;
       case 2:
+        if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0 
           && tablero[posicion_fila+2][posicion_columna-2][0]==0
           && tablero[posicion_fila+3][posicion_columna][0]==0)
@@ -626,24 +656,23 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
           if (posicion_fila<19) {
             posicion_fila++;
           }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          
         } else {
           fondo=true;
         }            
         break;
       case 3:
+        if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (  //Eje
           tablero[posicion_fila+3][posicion_columna-1][0]==0
           &&tablero[posicion_fila+3][posicion_columna-2][0]==0)
         {
           if (posicion_fila<19) {
             posicion_fila++;
-          }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }          
@@ -654,36 +683,41 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
       estado_pieza %= 4;
       switch(estado_pieza) {
       case 0:
+        if (posicion_fila==20) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0 
           && tablero[posicion_fila+2][posicion_columna-2][0]==0
           && tablero[posicion_fila+2][posicion_columna][0]==0)
         {
           if (posicion_fila<20) {
             posicion_fila++;
-          }
-          if (posicion_fila==20) {
-            posicion_fila=20; 
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }                           
         break;
       case 1:
+        if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+3][posicion_columna-1][0]==0
           &&tablero[posicion_fila+3][posicion_columna][0]==0)
         {
           if (posicion_fila<19) {
             posicion_fila++;
-          }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }                           
         break;
       case 2:
+        if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0 //Eje
           &&tablero[posicion_fila+2][posicion_columna][0]==0
           &&tablero[posicion_fila+3][posicion_columna-2][0]==0)
@@ -691,23 +725,23 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
           if (posicion_fila<19) {
             posicion_fila++;
           }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          
         } else {
           fondo=true;
         }                           
         break;
       case 3:
+      if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+3][columna-1][0]==0
           &&tablero[fila+1][columna-2][0]==0 )
         {
           if (posicion_fila<19) {
             posicion_fila++;
           }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          
         } else {
           fondo=true;
         }                           
@@ -718,30 +752,32 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
       estado_pieza %= 2;
       switch(estado_pieza) {
       case 0:
+      if (posicion_fila==20) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0  //Eje
           &&tablero[posicion_fila+2][posicion_columna-2][0]==0
           &&tablero[posicion_fila+1][posicion_columna][0]==0)
         {
           if (posicion_fila<20) {
             posicion_fila++;
-          }
-          if (posicion_fila==20) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }                 
         break;
       case 1:
+      if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0           
           &&tablero[posicion_fila+3][posicion_columna][0]==0)
         {
           if (posicion_fila<19) {
             posicion_fila++;
-          }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }                 
@@ -752,30 +788,32 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
       estado_pieza %= 2;
       switch(estado_pieza) {
       case 0:
+        if (posicion_fila==20) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0  //Eje
           &&tablero[posicion_fila+2][posicion_columna][0]==0              
           &&tablero[posicion_fila+1][posicion_columna-2][0]==0)
         {
           if (posicion_fila<20) {
             posicion_fila++;
-          }
-          if (posicion_fila==20) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }                 
         break;
       case 1:
+      if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna][0]==0
           &&tablero[posicion_fila+3][posicion_columna-1][0]==0)
         {
           if (posicion_fila<19) {
             posicion_fila++;
-          }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }                 
@@ -786,59 +824,63 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
       estado_pieza %= 4;
       switch(estado_pieza) {
       case 0:
+        if (posicion_fila==20) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0  //Eje
           &&tablero[posicion_fila+2][posicion_columna-2][0]==0
           &&tablero[posicion_fila+2][posicion_columna][0]==0)
         {
           if (posicion_fila<20) {
             posicion_fila++;
-          }
-          if (posicion_fila==20) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }  
         break;
       case 1:
+      if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+3][posicion_columna-1][0]==0
           &&tablero[posicion_fila+2][posicion_columna][0]==0)
         {
           if (posicion_fila<19) {
             posicion_fila++;
-          }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }  
         break;
       case 2:
+      if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-2][0]==0
           &&tablero[posicion_fila+2][posicion_columna][0]==0
           &&tablero[posicion_fila+3][posicion_columna-1][0]==0)
         {
           if (posicion_fila<19) {
             posicion_fila++;
-          }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }  
         break;
       case 3:
+      if (posicion_fila==19) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+3][posicion_columna-1][0]==0
           &&tablero[posicion_fila+2][posicion_columna-2][0]==0)
         {
           if (posicion_fila<19) {
             posicion_fila++;
-          }
-          if (posicion_fila==19) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }  
@@ -849,15 +891,16 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
       estado_pieza %= 1;
       switch(estado_pieza) {
       case 0:
+      if (posicion_fila==20) {
+            fondo = true;
+            break;
+          }
         if (tablero[posicion_fila+2][posicion_columna-1][0]==0  //Eje
           &&tablero[posicion_fila+2][posicion_columna][0]==0)
         {
           if (posicion_fila<20) {
             posicion_fila++;
-          }
-          if (posicion_fila==20) {
-            fondo = true;
-          }
+          }          
         } else {
           fondo=true;
         }  
@@ -869,8 +912,6 @@ void mover_pieza(int pieza, int estado_pieza, int columna, int fila, String dire
 }
 
 void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
-
-
   switch(pieza) {
   case 0:
     estado_pieza%=2;
@@ -885,7 +926,6 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
         estado++;
       } 
       break;
-
     case 1:
       if (columna>=2 && columna<=8) {
         if (tablero[fila+1][columna-2][0]==0
@@ -896,11 +936,9 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
           estado++;
         }
       }
-
       break;
     }
     break;
-
   case 1:
     estado_pieza%=4;
     switch(estado_pieza) {
@@ -923,7 +961,6 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
           estado++;
         }
       }
-
       break;
     case 2:
       if (true) {
@@ -949,7 +986,6 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
       break;
     }
     break;
-
   case 2:
     estado_pieza %= 4;
     switch(estado_pieza) {
@@ -961,7 +997,6 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
         estado++;
       }       
       break;
-
     case 1:
       if (posicion_columna>=2) {
         if (tablero[fila+1][columna-2][0]==0
@@ -972,7 +1007,6 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
         }
       }       
       break;
-
     case 2:
       if (tablero[fila][columna-1][0]==0
         &&tablero[fila+2][columna-1][0]==0
@@ -993,9 +1027,7 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
       }
       break;
     }
-
     break;
-
   case 3:
     estado_pieza %=2;
     switch(estado_pieza) { 
@@ -1006,7 +1038,6 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
         estado++;
       }
      break;
-
     case 1:
       if (columna>=2)
         if (tablero[fila+1][columna-2][0]==0
@@ -1014,7 +1045,6 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
           dibujar_pieza(pieza, estado_pieza, columna, fila, false);
           estado++;
         }
-
       break;
     }
   break;
@@ -1038,11 +1068,7 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
       }
      break;
     }
-    
-
-
   break;
-  
   case 5:
     estado_pieza %=4;
     switch(estado_pieza) {
@@ -1080,20 +1106,17 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
   }
 }
 
-
-
-
-
-
-
 void mouseClicked() {
   girar_pieza(tetro, estado, posicion_columna, posicion_fila);
 }
 
-
 void keyPressed() {
+  delay(1);
   if (key == 's' || key == 'S') {
     mover_pieza(tetro, estado, posicion_columna, posicion_fila, "abajo");
+    puntaje += 0.1;
+    
+    
   } else if (key == 'w' || key == 'W') {
     mover_pieza(tetro, estado, posicion_columna, posicion_fila, "abajo");
   } else if (key == 'd' || key == 'D') {
