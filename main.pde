@@ -1140,11 +1140,12 @@ int fila_quitada = 0;
         }
       }
       fil=tablero.length ; //Reiniciamos el tablero, se le suma 1 porque al empezar el ciclo le esta uno
-      puntaje += 100;
       filas_quitadas++;
     }
   }
 print("Se han quitado: " + filas_quitadas);
+puntaje += 100 * pow(2, filas_quitadas);
+println(" Se han agregado" + (100 * pow(2, filas_quitadas-1)) + "a la puntuacion" );
 }
 
 void mouseClicked() {
