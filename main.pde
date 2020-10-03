@@ -99,13 +99,16 @@ void draw() {
   textSize(20);
   text("Puntaje: " + puntaje,width/10,22.8*(height/24));
   text("Nivel: " + nivel,6*width/10,22.8*(height/24));
+  text("Filas eliminadas: " + filas_eliminadas,width/10,23.6*(height/24));
+  nivel = filas_eliminadas/10;
   //println(puntaje);
 
   dibujar_pieza(tetro, estado, posicion_columna, posicion_fila, true);  //Dibujamos tetromino
 
   if (fondo) {  //Detectamos si hay colision abajo
     revisarFila(); //Revisamos filas completas
-    tiempo_bajada--;
+    tiempo_bajada -= 5;
+    println("El tiempo de bajada es "+tiempo_bajada);
      if(posicion_fila < 2){
       println("Game Over");
       while(true);
@@ -115,6 +118,8 @@ void draw() {
     posicion_fila=0;
     tetro += int(random(1,6));
     tetro %= 7;
+    estado = int(random(0,2))*2;
+    println(estado);
     fondo=false;    
   }
   
@@ -1122,7 +1127,7 @@ int fila_quitada = 0;
     for(int col=0; col<=tablero[0].length-1; col++){
       suma += tablero[fil][col][0];
     }
-    println("la fila " + fil + " ha sumado " + suma);
+   // println("la fila " + fil + " ha sumado " + suma);
     if(suma==10){
       for(int col=0; col<=tablero[0].length-1; col++){   //Retiramos los valores de la fila completa
        tablero[fil][col][0]=0; 
@@ -1143,9 +1148,8 @@ int fila_quitada = 0;
       filas_quitadas++;
     }
   }
-print("Se han quitado: " + filas_quitadas);
-puntaje += 100 * pow(2, filas_quitadas);
-println(" Se han agregado" + (100 * pow(2, filas_quitadas-1)) + "a la puntuacion" );
+puntaje += 100 * pow(2, filas_quitadas-1);
+filas_eliminadas += filas_quitadas;
 }
 
 void mouseClicked() {
@@ -1157,8 +1161,6 @@ void keyPressed() {
   if (key == 's' || key == 'S') {
     mover_pieza(tetro, estado, posicion_columna, posicion_fila, "abajo");
     puntaje += 1;
-    
-    
   } else if (key == 'w' || key == 'W') {
     mover_pieza(tetro, estado, posicion_columna, posicion_fila, "abajo");
   } else if (key == 'd' || key == 'D') {
