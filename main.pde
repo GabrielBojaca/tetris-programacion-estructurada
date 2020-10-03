@@ -81,37 +81,41 @@ void setup() {
 
 
 void draw() {
-  if(toma_tiempo){
+  if(toma_tiempo){  //Tomamos el tiempo
    tiempo_anterior=millis(); 
    toma_tiempo = false;
   }
-  if(millis()-tiempo_anterior>tiempo_bajada){
+  if(millis()-tiempo_anterior>tiempo_bajada){ //Si el tiempo tomado es mayor a un intervalor, reiniciamos tiempo y bajamos el tetromino
   mover_pieza(tetro, estado, posicion_columna, posicion_fila, "abajo");
   toma_tiempo = true;
+  tiempo_bajada /= 1;
   }
   
   
- // println(estado);
   stroke(0);
   fill(130);
-  rect(1*(width/12), 22*(height/24), width*10/12, width/6);
+  rect(1*(width/12), 22*(height/24), width*10/12, width/6); //Dibujamos recuadro puntaje y nivel
   fill(0);
   textSize(20);
   text("Puntaje: " + puntaje,width/10,22.8*(height/24));
   text("Nivel: " + nivel,6*width/10,22.8*(height/24));
   //println(puntaje);
 
-  dibujar_pieza(tetro, estado, posicion_columna, posicion_fila, true);
- // dibujar_pieza(0, 1, 3, 14, true);
- // dibujar_pieza(0, 0, 5, 19, true);
-  if (fondo) {
-    revisarFila();
-    posicion_columna=5;
+  dibujar_pieza(tetro, estado, posicion_columna, posicion_fila, true);  //Dibujamos tetromino
+
+  if (fondo) {  //Detectamos si hay colision abajo
+    revisarFila(); //Revisamos filas completas
+    tiempo_bajada--;
+     if(posicion_fila < 2){
+      println("Game Over");
+      while(true);
+    }
+    
+    posicion_columna=5;  //fijamos coordenadas arriba para agregar un nuevo tetromino
     posicion_fila=0;
     tetro += int(random(1,6));
-    println(int(random(1,6)));
     tetro %= 7;
-    fondo=false;
+    fondo=false;    
   }
   
   dibujar_tablero();
@@ -132,7 +136,7 @@ void dibujar_tablero() {
       rect((j+1)* (width/12), (i-1) *(width/12), width/12, width/12);
       push();
       fill(255);
-      text(tablero[i][j][0], (j+1)* (width/12)+10, (i-1)*(width/12)+20);
+      //text(tablero[i][j][0], (j+1)* (width/12)+10, (i-1)*(width/12)+20);
       pop();
     }
   }
@@ -1110,27 +1114,24 @@ void girar_pieza(int pieza, int estado_pieza, int columna, int fila) {
 }
 
 void revisarFila(){
+int filas_quitadas= 0;
 int suma=0;
 int fila_quitada = 0;
-
   for(int fil=tablero.length-1; fil>=0; fil--){
     suma=0;
     for(int col=0; col<=tablero[0].length-1; col++){
       suma += tablero[fil][col][0];
-      //println("fila: " + fil + "columna: " + col + "valor: " + tablero[fil][col][0] + "suma: " + suma);
     }
-    if(suma==10 && fondo == true){
-      println("ptm");
-      for(int col=0; col<=tablero[0].length-1; col++){
+    println("la fila " + fil + " ha sumado " + suma);
+    if(suma==10){
+      for(int col=0; col<=tablero[0].length-1; col++){   //Retiramos los valores de la fila completa
        tablero[fil][col][0]=0; 
        tablero[fil][col][1]=0;
        tablero[fil][col][2]=0;
        tablero[fil][col][3]=0;
-       fila_quitada = fil;
       } 
-      puntaje += 100;
-      
-      for(int fil_quitar = fila_quitada; fil_quitar>=1; fil_quitar--){
+      fila_quitada = fil;     
+      for(int fil_quitar = fila_quitada; fil_quitar>=1; fil_quitar--){    //Desplazamos todas las filas superiores hacia abajo
         for(int col_quitar = 0; col_quitar<=tablero[0].length-1; col_quitar++){
          tablero[fil_quitar][col_quitar][0]=tablero[fil_quitar-1][col_quitar][0]; 
          tablero[fil_quitar][col_quitar][1]=tablero[fil_quitar-1][col_quitar][1];
@@ -1138,13 +1139,12 @@ int fila_quitada = 0;
          tablero[fil_quitar][col_quitar][3]=tablero[fil_quitar-1][col_quitar][3];  
         }
       }
-      fil=tablero.length-1 ;
-       
+      fil=tablero.length ; //Reiniciamos el tablero, se le suma 1 porque al empezar el ciclo le esta uno
+      puntaje += 100;
+      filas_quitadas++;
     }
-     
-    
   }
-  //delay(8000);
+print("Se han quitado: " + filas_quitadas);
 }
 
 void mouseClicked() {
