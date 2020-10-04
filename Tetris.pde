@@ -24,11 +24,14 @@ boolean juego = true;
 String direccion;
 boolean fondo=false;
 
+int ultima_puntuacion=0;
 int tiempo_anterior = 0;
+
 boolean toma_tiempo = true;
 int tiempo_bajada=800;
-
+int partida=0;
 int[] puntuaciones = {0,0,0,0,0,0,0,0,0,0};
+int[] muestra_puntuaciones = {0,0,0,0,0,0,0,0,0,0};
 int[][][] tablero = {
   //Columna  {estado,R,G,B}
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, //Fila 
@@ -83,6 +86,7 @@ void setup() {
 
 
 void draw() {
+  println(muestra_puntuaciones);
   if(inicio){
   principio();
   }
@@ -148,11 +152,28 @@ void principio(){
       tablero[fil][col][2]=0;
       tablero[fil][col][3]=0;
     }
-  }  
-  
-  for(int i=0; i<= puntuaciones.length-1; i++){
-   
+  }    
+  fill(255);
+  for(int i=muestra_puntuaciones.length-1; i>=0; i--){
+    if(i<muestra_puntuaciones.length/2){
+      if(muestra_puntuaciones[i] == 0){
+      text( (i+1) + ": --" ,3*width/columnas, (17.7+i)*height/24);
+      }
+      else{
+      text( (i+1) + ": " + muestra_puntuaciones[i] ,3*width/columnas, (17.7+i)*height/24);  
+      }
+    }
+    else{
+      if(muestra_puntuaciones[i] == 0){
+      text( (i+1) + ": --" ,7.5*width/columnas, (17.7+i-5)*height/24);
+      }
+      else{
+        text( (i+1) + ": " + muestra_puntuaciones[i] ,7.5*width/columnas, (17.7+i-5)*height/24);
+        
+      }
+    }
   }
+  
   
   
   pop();
@@ -170,6 +191,18 @@ void game_over(){
   text("OVER",38,360);
   textSize(20);
   text("Presiona una tecla para empezar",1.1*width/columnas,14.75*height/24);
+  
+   if(ultima_puntuacion>min(puntuaciones)){
+    puntuaciones[partida]=ultima_puntuacion;   
+    muestra_puntuaciones =reverse(sort(puntuaciones));
+  }
+  
+  for(int i=0; i<= puntuaciones.length-1; i++){
+   
+  }
+  
+  
+  
   puntaje = 0;
   nivel = 0;
   filas_eliminadas=0;
@@ -232,6 +265,9 @@ void juego(){
     tiempo_bajada -= 5;
     if(posicion_fila < 2){
       game_over = true; 
+      ultima_puntuacion = puntaje;
+      partida++;
+      partida %= 10;
     }
     posicion_columna=5;  //fijamos coordenadas arriba para agregar un nuevo tetromino
     posicion_fila=0;
@@ -1268,7 +1304,8 @@ int fila_quitada = 0;
       filas_quitadas++;
     }
   }
-puntaje += 100 * pow(2, filas_quitadas-1);
+ if(filas_quitadas-1 > 0){
+puntaje += 100 * pow(2, filas_quitadas-1);}
 filas_eliminadas += filas_quitadas;
 }
 
