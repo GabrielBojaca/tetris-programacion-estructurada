@@ -7,26 +7,28 @@ int filas =24;
 
 int posicion_fila=0;
 int posicion_columna=0;
-int posicion_fila_anterior;
-int posicion_columna_anterior;
+//int posicion_fila_anterior;
+//int posicion_columna_anterior;
 int estado=0;
-int estado_anterior=0;
+//int estado_anterior=0;
 
 int tetro=0;
 
 int puntaje = 0;
 int nivel = 0;
 int filas_eliminadas=0;
-
+boolean inicio=true;
+boolean game_over=false;
+boolean juego = true;
 
 String direccion;
 boolean fondo=false;
 
 int tiempo_anterior = 0;
 boolean toma_tiempo = true;
-int tiempo_bajada=500;
+int tiempo_bajada=800;
 
-
+int[] puntuaciones = {0,0,0,0,0,0,0,0,0,0};
 int[][][] tablero = {
   //Columna  {estado,R,G,B}
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, //Fila 
@@ -47,10 +49,10 @@ int[][][] tablero = {
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
   { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0} }, 
-  { {0, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0} } 
+  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
+  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
+  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }, 
+  { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} } 
 };
 
 
@@ -74,13 +76,133 @@ void setup() {
   }
   posicion_fila =5;
   posicion_columna = 5;
-  posicion_columna_anterior=posicion_columna;
-  posicion_fila_anterior=posicion_fila; 
+  //posicion_columna_anterior=posicion_columna;
+  //posicion_fila_anterior=posicion_fila; 
   estado=0;
 }
 
 
 void draw() {
+  if(inicio){
+  principio();
+  }
+  else if(game_over){
+  game_over();
+  }
+  else{
+  juego();
+  }
+}
+
+void principio(){
+  push();
+  fill(0);
+  rect(width/columnas, height/24,(width - 2*width/columnas),22*height/24);
+  textSize(95);
+  fill(255);
+  text("TETRIS",38,120);
+  stroke(255);
+  fill(0);
+  rect(3*width/columnas, 5*height/24,width/columnas,height/24);
+  rect(2*width/columnas, 6*height/24,width/columnas,height/24);
+  rect(3*width/columnas, 6*height/24,width/columnas,height/24);
+  rect(4*width/columnas, 6*height/24,width/columnas,height/24);
+  textSize(20);
+  fill(255);
+  text("W", 3.25*width/columnas, 5.75*height/24);
+  text("S", 3.35*width/columnas, 6.75*height/24);
+  text("A", 2.3*width/columnas, 6.75*height/24);
+  text("D", 4.25*width/columnas, 6.75*height/24);
+  
+  textSize(15);
+  
+  line(4.1*width/columnas, 5.5*height/24,6.25*width/columnas, 5.5*height/24);
+  text("Girar",6.5*width/columnas, 5.7*height/24);
+  line(5.1*width/columnas, 6.5*height/24,6.25*width/columnas, 6.5*height/24);
+  text("Mover derecha",6.5*width/columnas, 6.75*height/24);
+  line(3.5*width/columnas, 7.5*height/24,6.25*width/columnas, 7.5*height/24);
+  line(3.5*width/columnas, 7.1*height/24,3.5*width/columnas, 7.5*height/24);
+  text("Bajar",6.5*width/columnas, 7.75*height/24);
+  
+  
+  line(2.5*width/columnas, 8.5*height/24,6.25*width/columnas, 8.5*height/24);
+  line(2.5*width/columnas, 7.1*height/24,2.5*width/columnas, 8.5*height/24);
+  text("Mover Izquierda",6.5*width/columnas, 8.75*height/24);
+  
+  textSize(20);
+  
+  text("Presiona una tecla para empezar",1.1*width/columnas,10.75*height/24);
+  stroke(0);
+  fill(255);
+  rect(((1+(millis()/50)%10))*width/columnas, 13*height/24,width/columnas,height/24);
+  fill(0,170,0);
+  rect(((1+(millis()/500)%10))*width/columnas, 14*height/24,width/columnas,height/24);
+  fill(0,170,86);
+  rect(((1+(millis()/5000)%10))*width/columnas, 15*height/24,width/columnas,height/24);  
+  fill(255);
+  
+  for(int fil=tablero.length-1; fil>=0; fil--){
+    for(int col=0; col<=tablero[0].length-1; col++){
+      tablero[fil][col][0]=0;
+      tablero[fil][col][1]=0;
+      tablero[fil][col][2]=0;
+      tablero[fil][col][3]=0;
+    }
+  }  
+  
+  for(int i=0; i<= puntuaciones.length-1; i++){
+    
+  }
+  
+  
+  pop();
+}
+void game_over(){
+  push();
+  fill(0);
+  stroke(0);
+  //rect(width/columnas, height/24,(width - 2*width/columnas),21*height/24,00.5);
+  textSize(95);
+  fill(255);
+  stroke(0);
+  text("TETRIS",38,120);;
+  text("GAME",38,240);
+  text("OVER",38,360);
+  textSize(20);
+  text("Presiona una tecla para empezar",1.1*width/columnas,14.75*height/24);
+  puntaje = 0;
+  nivel = 0;
+  filas_eliminadas=0;
+  
+  for(int fil=tablero.length-1; fil>=0; fil--){
+    for(int col=0; col<=tablero[0].length-1; col++){
+      tablero[fil][col][0]=0;
+      tablero[fil][col][1]=0;
+      tablero[fil][col][2]=0;
+      tablero[fil][col][3]=0;
+    }
+  }
+  
+  posicion_fila =0;
+  posicion_columna = 5;
+  estado=0;   
+  fondo=false;   
+  tiempo_bajada=800;
+  pop();
+  
+}
+
+void juego(){
+  stroke(0);
+  fill(102);
+  for (int i=0; i<=columnas-1; i++) { //columnas
+    for (int j=0; j<=filas-1; j++) { //filas
+      rect(i*(width/columnas), j*(height/filas), width/columnas, width/columnas);
+      //println(i+","+j);
+    }
+  }
+  
+  
   if(toma_tiempo){  //Tomamos el tiempo
    tiempo_anterior=millis(); 
    toma_tiempo = false;
@@ -108,24 +230,22 @@ void draw() {
   if (fondo) {  //Detectamos si hay colision abajo
     revisarFila(); //Revisamos filas completas
     tiempo_bajada -= 5;
-    println("El tiempo de bajada es "+tiempo_bajada);
-     if(posicion_fila < 2){
-      println("Game Over");
-      while(true);
+    if(posicion_fila < 2){
+      game_over = true; 
     }
-    
     posicion_columna=5;  //fijamos coordenadas arriba para agregar un nuevo tetromino
     posicion_fila=0;
     tetro += int(random(1,6));
     tetro %= 7;
     estado = int(random(0,2))*2;
-    println(estado);
+    //println(estado);
     fondo=false;    
   }
   
   dibujar_tablero();
   
 }
+
 
 void dibujar_tablero() {
   //Tablero[fila][columna][Estado,R,G,B]
@@ -1156,13 +1276,21 @@ void mouseClicked() {
   girar_pieza(tetro, estado, posicion_columna, posicion_fila);
 }
 
+void keyReleased() {
+inicio=false;
+  if(game_over == true){
+  game_over=false;
+  inicio=true;
+  }}
+
 void keyPressed() {
+  
   delay(1);
   if (key == 's' || key == 'S') {
     mover_pieza(tetro, estado, posicion_columna, posicion_fila, "abajo");
     puntaje += 1;
   } else if (key == 'w' || key == 'W') {
-    mover_pieza(tetro, estado, posicion_columna, posicion_fila, "abajo");
+    girar_pieza(tetro, estado, posicion_columna, posicion_fila);
   } else if (key == 'd' || key == 'D') {
     mover_pieza(tetro, estado, posicion_columna, posicion_fila, "derecha");
   } else if (key == 'a' || key == 'A') {
