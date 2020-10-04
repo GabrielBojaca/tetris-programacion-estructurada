@@ -151,7 +151,7 @@ void principio(){
   }  
   
   for(int i=0; i<= puntuaciones.length-1; i++){
-    
+   
   }
   
   
