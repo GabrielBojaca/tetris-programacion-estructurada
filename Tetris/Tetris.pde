@@ -121,7 +121,7 @@ void principio(){
   textSize(15);
   
   line(4.1*width/columnas, 5.5*height/24,6.25*width/columnas, 5.5*height/24);
-  text("Girar",6.5*width/columnas, 5.7*height/24);
+  text("Girar / click",6.5*width/columnas, 5.7*height/24);
   line(5.1*width/columnas, 6.5*height/24,6.25*width/columnas, 6.5*height/24);
   text("Mover derecha",6.5*width/columnas, 6.75*height/24);
   line(3.5*width/columnas, 7.5*height/24,6.25*width/columnas, 7.5*height/24);
@@ -175,7 +175,7 @@ void principio(){
   }
   
   
-  
+  puntaje=0;
   pop();
 }
 void game_over(){
